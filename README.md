@@ -11,7 +11,7 @@ The plugin is configured in `build.gradle` as follows:
 ```
 plugins {
     id 'org.openjfx.javafxplugin' version '0.0.7'
-    id 'org.beryx.jlink' version '2.11.0'
+    id 'org.beryx.jlink' version '2.12.0'
 }
 
 dependencies {
@@ -26,6 +26,8 @@ javafx {
     modules = ['javafx.controls']
 }
 
+version = '5.4.3'
+
 mainClassName = "org.example.richtextfx/org.example.richtextfx.JavaKeywordsDemo"
 jlink {
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
@@ -33,6 +35,15 @@ jlink {
         name = 'java-keywords'
     }
     addExtraDependencies("javafx")
+    jpackage {
+        // Set the environment property BADASS_JLINK_JPACKAGE_HOME or explicitly configure the below property
+        // jpackageHome = '/usr/lib/jvm/jdk14'
+        imageOptions = ['--icon', 'src/main/resources/java.ico']
+        installerOptions = [
+                '--file-associations', 'src/main/resources/associations.properties',
+                '--app-version', version,
+        ]
+    }
 }
 ```
 
@@ -53,3 +64,12 @@ cd build/image/bin
 ```
 
 A window containing Java source code with syntax highlighting should appear on the screen.
+
+
+**Creating platform-specific application installers:**
+```
+./gradlew jpackage
+```
+
+The platform-specific application installers will be available in the build/jpackage directory.
+The installers associate files with the extension `.my-java` with this application.
