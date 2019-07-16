@@ -17,9 +17,14 @@
 
 package org.example.richtextfx;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -120,7 +125,18 @@ public class JavaKeywordsDemo extends Application {
         // when no longer need syntax highlighting and wish to clean up memory leaks
         // run: `cleanupWhenNoLongerNeedIt.unsubscribe();`
 
-        codeArea.replaceText(0, 0, sampleCode);
+        String code = sampleCode;
+        List<String> args = this.getParameters().getRaw();
+        if(args.size() == 1) {
+            String filePath = args.get(0);
+            try {
+                code = new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                code = "// Cannot read file " + filePath + ":\n// " + e.toString();
+            }
+        }
+
+        codeArea.replaceText(0, 0, code);
 
         Scene scene = new Scene(new StackPane(new VirtualizedScrollPane<>(codeArea)), 600, 400);
         scene.getStylesheets().add(JavaKeywordsDemo.class.getResource("java-keywords.css").toExternalForm());
