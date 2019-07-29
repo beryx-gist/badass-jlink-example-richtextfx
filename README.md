@@ -4,14 +4,16 @@
 
 ## Badass JLink Plugin Example: RichTextFX ##
 
-A small JavaFX application using [RichTextFX](https://github.com/FXMisc/RichTextFX).
+A small JavaFX application using [RichTextFX](https://github.com/FXMisc/RichTextFX) that shows how to use the [Badass JLink Plugin](https://github.com/beryx/badass-jlink-plugin).
+It creates a custom runtime image containing only the JDK and JavaFX modules required by the application.
+It also creates a platform-specific installer that associates files with the _my-java_ extension with this application.
 
 The plugin is configured in `build.gradle` as follows:
 
 ```
 plugins {
     id 'org.openjfx.javafxplugin' version '0.0.7'
-    id 'org.beryx.jlink' version '2.12.0'
+    id 'org.beryx.jlink' version '2.13.0'
 }
 
 dependencies {
@@ -43,6 +45,9 @@ jlink {
                 '--file-associations', 'src/main/resources/associations.properties',
                 '--app-version', version,
         ]
+    }
+    customImage {
+        appModules = ['javafx.base', 'javafx.controls', 'javafx.graphics']
     }
 }
 ```
