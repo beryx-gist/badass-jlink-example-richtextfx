@@ -37,12 +37,10 @@ jlink {
         name = 'java-keywords'
     }
     addExtraDependencies("javafx")
-    launcher {
-        jvmArgs = ['-splash:$APPDIR/app/splash.png']
-    }
     jpackage {
         // Set the environment property BADASS_JLINK_JPACKAGE_HOME or explicitly configure the below property
         // jpackageHome = '/usr/lib/jvm/jdk14'
+        jvmArgs = ['-splash:$APPDIR/app/splash.png']
         imageOptions = ['--icon', 'src/main/resources/java.ico']
         installerOptions = [
                 '--file-associations', 'src/main/resources/associations.properties',
