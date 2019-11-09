@@ -17,6 +17,8 @@
 
 package org.example.richtextfx;
 
+import java.awt.*;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -128,7 +130,7 @@ public class JavaKeywordsDemo extends Application {
         String code = sampleCode;
         List<String> args = this.getParameters().getRaw();
         if(args.size() == 1) {
-            String filePath = args.get(0);
+            String filePath = new String(args.get(0).getBytes(java.nio.charset.Charset.defaultCharset()), java.nio.charset.StandardCharsets.UTF_8);
             try {
                 code = new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.UTF_8);
             } catch (IOException e) {
@@ -143,6 +145,10 @@ public class JavaKeywordsDemo extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Java Keywords Demo");
         primaryStage.show();
+        var splashScreen = SplashScreen.getSplashScreen();
+        if(splashScreen != null) {
+            splashScreen.close();
+        }
     }
 
     private static StyleSpans<Collection<String>> computeHighlighting(String text) {
