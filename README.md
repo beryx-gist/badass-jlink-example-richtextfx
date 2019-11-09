@@ -12,8 +12,8 @@ The plugin is configured in `build.gradle` as follows:
 
 ```
 plugins {
-    id 'org.openjfx.javafxplugin' version '0.0.7'
-    id 'org.beryx.jlink' version '2.13.0'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+    id 'org.beryx.jlink' version '2.16.2'
 }
 
 dependencies {
@@ -37,6 +37,9 @@ jlink {
         name = 'java-keywords'
     }
     addExtraDependencies("javafx")
+    launcher {
+        jvmArgs = ['-splash:$APPDIR/app/splash.png']
+    }
     jpackage {
         // Set the environment property BADASS_JLINK_JPACKAGE_HOME or explicitly configure the below property
         // jpackageHome = '/usr/lib/jvm/jdk14'
@@ -45,9 +48,19 @@ jlink {
                 '--file-associations', 'src/main/resources/associations.properties',
                 '--app-version', version,
         ]
+        if (org.gradle.internal.os.OperatingSystem.current().windows) {
+            installerOptions += ['--win-per-user-install', '--win-dir-chooser', '--win-menu']
+        }
     }
     customImage {
         appModules = ['javafx.base', 'javafx.controls', 'javafx.graphics']
+    }
+}
+tasks.jpackageImage.doLast {
+    copy {
+        from "src/main/resources"
+        include "splash.png"
+        into "build/jpackage/$project.name/app"
     }
 }
 ```
