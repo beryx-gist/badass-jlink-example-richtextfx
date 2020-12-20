@@ -1,6 +1,6 @@
 plugins {
     id 'org.openjfx.javafxplugin' version '0.0.9'
-    id 'org.beryx.jlink' version '2.22.0'
+    id 'org.beryx.jlink' version '2.23.1-alpha-1'
 }
 
 dependencies {
@@ -12,7 +12,7 @@ repositories {
 }
 
 javafx {
-    version = '14'
+    version = '15'
     modules = ['javafx.controls']
 }
 
@@ -20,37 +20,39 @@ version = '5.4.3'
 
 application {
     mainModule.set("org.example.richtextfx")
-    mainClass.set("org.example.richtextfx.JavaKeywordsDemo")
+    mainClass.set("org.example.richtextfx.Launcher")
 }
 
 jlink {
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+
+    customImage {
+        jdkAdditive = true
+        jdkModules = ['java.management','java.instrument','jdk.management.agent','jdk.crypto.ec']   // debug only
+    }
+
     launcher {
         name = 'java-keywords'
         noConsole = true
+        jvmArgs = ['-Dcom.sun.management.jmxremote']
     }
     addExtraDependencies("javafx")
 
     jpackage {
-        jvmArgs = ['-splash:$APPDIR/splash.png']
+        jvmArgs = ['-Dcom.sun.management.jmxremote', '-splash:$APPDIR/splash.png']
         def currentOs = org.gradle.internal.os.OperatingSystem.current()
         def imgType = currentOs.windows ? 'ico' : currentOs.macOsX ? 'icns' : 'png'
         icon = "src/main/resources/java.$imgType"
-        // imageOptions += ['--win-console']
         installerOptions += [
                 '--vendor', 'Acme Corporation',
                 '--file-associations', 'src/main/resources/associations.properties',
                 '--app-version', version
         ]
         if (currentOs.windows) {
+            imageOptions += ['--win-console']
             installerOptions += ['--win-per-user-install', '--win-dir-chooser', '--win-menu']
         }
     }
-/*
-    customImage {
-        appModules = ['javafx.base', 'javafx.controls', 'javafx.graphics']
-    }
-*/
 }
 tasks.jpackageImage.doLast {
     copy {
