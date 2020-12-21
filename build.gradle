@@ -1,6 +1,6 @@
 plugins {
     id 'org.openjfx.javafxplugin' version '0.0.9'
-    id 'org.beryx.jlink' version '2.23.1-alpha-1'
+    id 'org.beryx.jlink' version '2.23.1-alpha-2'
 }
 
 dependencies {
@@ -28,8 +28,12 @@ jlink {
 
     customImage {
         jdkAdditive = true
-        jdkModules = ['java.management','java.instrument','jdk.management.agent','jdk.crypto.ec']   // debug only
+        jdkModules = ['java.management','java.instrument','jdk.management.agent','jdk.crypto.ec']
+        // appModules = ['java.keywords.merged.module']
+        appModules = ['org.example.richtextfx']
     }
+
+    enableCds()
 
     launcher {
         name = 'java-keywords'
